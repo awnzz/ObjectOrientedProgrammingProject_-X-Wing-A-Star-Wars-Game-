@@ -74,13 +74,13 @@ class SurvivalBoard extends JPanel implements ActionListener {
         });
         add(btnGotIt);
         
-        bg = loadImage("/Background3.png");
-        playerImg = loadImage("/XWing.png");
-        asteroidImg = loadImage("/Asteroid.png");
-        tieImg = loadImage("/TIE.png");
-        pBulletImg = loadImage("/PlayerBullet.png");
-        eBulletImg = loadImage("/EnemyBullet.png");
-        expImg = loadImage("/Explosion.png");
+        bg = loadImage("/assets/Background3.png");
+        playerImg = loadImage("/assets/XWing.png");
+        asteroidImg = loadImage("/assets/Asteroid.png");
+        tieImg = loadImage("/assets/TIE.png");
+        pBulletImg = loadImage("/assets/PlayerBullet.png");
+        eBulletImg = loadImage("/assets/EnemyBullet.png");
+        expImg = loadImage("/assets/Explosion.png");
         
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
@@ -105,10 +105,19 @@ class SurvivalBoard extends JPanel implements ActionListener {
         java.net.URL imgURL = getClass().getResource(path);
         if (imgURL != null) {
             return new ImageIcon(imgURL).getImage();
-        } else {
-            System.err.println("CRITICAL ERROR: Could not find image file: " + path);
-            return new ImageIcon().getImage();
         }
+
+        String filePath = path.startsWith("/") ? path.substring(1) : path;
+        java.io.File imageFile = new java.io.File(filePath);
+        if (!imageFile.isFile()) {
+            imageFile = new java.io.File("..", filePath);
+        }
+        if (imageFile.isFile()) {
+            return new ImageIcon(imageFile.getPath()).getImage();
+        }
+
+        System.err.println("CRITICAL ERROR: Could not find image file: " + path);
+        return new ImageIcon().getImage();
     }
 
     private void shoot() {

@@ -83,15 +83,28 @@ public class Game extends JFrame {
 
         // Background image
         JLabel lblBackground = new JLabel();
-        java.net.URL imgURL = getClass().getResource("/Background2.png");
-        if (imgURL != null) {
-            ImageIcon originalIcon = new ImageIcon(imgURL);
+        ImageIcon originalIcon = loadImage("/assets/Background2.png");
+        if (originalIcon != null) {
             Image resizedImage = originalIcon.getImage().getScaledInstance(360, 640, Image.SCALE_SMOOTH);
             lblBackground.setIcon(new ImageIcon(resizedImage));
         } else {
-            System.err.println("Could not find file: /Background2.png");
+            System.err.println("Could not find file: assets/Background2.png");
         }
         lblBackground.setBounds(0, 0, 360, 640); // Ensure background fills the frame
         contentPane.add(lblBackground);
+    }
+
+    private ImageIcon loadImage(String resourcePath) {
+        java.net.URL resourceUrl = getClass().getResource(resourcePath);
+        if (resourceUrl != null) {
+            return new ImageIcon(resourceUrl);
+        }
+
+        String filePath = resourcePath.startsWith("/") ? resourcePath.substring(1) : resourcePath;
+        java.io.File imageFile = new java.io.File(filePath);
+        if (!imageFile.isFile()) {
+            imageFile = new java.io.File("..", filePath);
+        }
+        return imageFile.isFile() ? new ImageIcon(imageFile.getPath()) : null;
     }
 }

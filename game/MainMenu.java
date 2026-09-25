@@ -96,16 +96,29 @@ public class MainMenu extends JFrame {
         });
         contentPane.add(btnNewButton_2);
 
-        java.net.URL imgURL = getClass().getResource("/Background.png");
-        if (imgURL != null) {
-            ImageIcon originalIcon = new ImageIcon(imgURL);
+        ImageIcon originalIcon = loadImage("/assets/Background.png");
+        if (originalIcon != null) {
             Image resizedImage = originalIcon.getImage().getScaledInstance(360, 640, Image.SCALE_SMOOTH);
             lblNewLabel_1.setIcon(new ImageIcon(resizedImage));
         } else {
-            System.err.println("Could not find file: /Background.png");
+            System.err.println("Could not find file: assets/Background.png");
         }
 
         lblNewLabel_1.setBounds(0, 0, 360, 640);
         contentPane.add(lblNewLabel_1);
+    }
+
+    private ImageIcon loadImage(String resourcePath) {
+        java.net.URL resourceUrl = getClass().getResource(resourcePath);
+        if (resourceUrl != null) {
+            return new ImageIcon(resourceUrl);
+        }
+
+        String filePath = resourcePath.startsWith("/") ? resourcePath.substring(1) : resourcePath;
+        java.io.File imageFile = new java.io.File(filePath);
+        if (!imageFile.isFile()) {
+            imageFile = new java.io.File("..", filePath);
+        }
+        return imageFile.isFile() ? new ImageIcon(imageFile.getPath()) : null;
     }
 }
